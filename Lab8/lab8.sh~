@@ -1,0 +1,5 @@
+
+# create the pod from nginx.yaml
+# don't need validate flag if using newer version of kubernetes
+
+kubectl create -f nginx.yaml --validate=false

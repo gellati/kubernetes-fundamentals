@@ -1,0 +1,4 @@
+
+# create pod from manifest volumes.yaml
+# can leave out --validate option when kubernetes upgraded to 1.24
+kubectl create -f volumes.yaml --validate=false

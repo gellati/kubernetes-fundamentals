@@ -1,0 +1,43 @@
+# nginx app
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    run: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    ports:
+    - containerPort: 80
+      protocol: TCP
+---
+# nginx service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    run: nginx
+---
+# Create the ingress resource
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx
+spec:
+  rules:
+  - host: nginx.192.168.99.100.nip.io
+    http:
+      paths:
+      - backend:
+          serviceName: nginx
+          servicePort: 80

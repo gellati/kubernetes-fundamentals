@@ -1,0 +1,439 @@
+
+
+not done:
+lab 3
+section 4.10, kubeadmin
+labs: https://github.com/kelseyhightower/kubernetes-the-hard-way
+
+chapter 3
+
+kubernetes networking demo
+https://github.com/containernetworking/cni
+see scripts directory, e.g. docker-run.sh
+
+kubectl, kubernetes client
+
+www.weave.works/docs/net/latest/kube-addon
+
+vi /lib/systemd/system/kubelet.service
+
+configured network directory in /etc/cni
+
+network isolation between namespaces
+kubernetes.io/docs/concepts/cluster-administration/addons
+
+
+knowledge check
+3.15a the kubernetes head node runs an api server
+true
+3.15b kubernetes nodes run the scheduler
+false
+3.15c pods are single container compute units
+false
+
+chapter 4
+
+4.6 Using minikube
+
+install kubernetes client:
+
+    sudo dnf install kubernetes-client
+
+install minikube:
+
+    curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+
+start a virtualbox virtual machine which contains a single node kubernetes deployment and the docker engine:
+
+    start minikube
+
+display resources:
+
+    kubectl get nodes
+
+display pods:
+
+    kubectl get pods
+
+display pod log
+
+    kubectl logs <pod name>
+
+display deployments
+
+    kubectl get deployments
+
+display services
+
+    kubectl get svc
+
+describe a service
+
+    kubectl describe svc <service name>
+
+services expose application to outside
+
+can get a list of minikube commands with the minikube command
+
+picking the right solution for a kubernetes setup:
+https://kubernetes.io/docs/setup/pick-right-solution/
+
+kubernetes api server
+https://kubernetes.io/docs/admin/kube-apiserver/
+
+single ip for each pod for kubernetes cluster
+
+get kubernetes service ip with
+    minikube ip
+get port number with following command, use NodePort number
+    kubectl describe svc <service name>
+
+
+
+knowledge check
+4.19.a
+Minikube is a single-node local Kubernetes environment
+True
+
+4.19.b
+Minikube does not contain the Kubernetes dashboard
+False
+
+4.19.c
+kubeadm is a command line tool to create Kubernetes users
+False
+
+4.19.d
+Kubernetes can be installed with any configuration management tool
+True
+
+4.19.e
+hyperkube allows us to run etcd
+False
+
+
+chapter 5
+
+get status of minikube
+
+    minikube status
+
+get inside minikube virtual machine and curl the api endpoint ( $ indicates command inside minikube vm)
+
+    minikube ssh
+    $ curl http://127.0.0.1:8080
+    # or curl http://localhost:8080
+
+documentation on kubernetes api groups:
+https://kubernetes.io/docs/concepts/overview/kubernetes-api/
+
+list api endpoint resources name, kind and other metadata:
+
+    $ curl http://127.0.0.1:8080<api endpoint>
+
+metadata conventions:
+https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md
+
+api conventions:
+https://github.com/kubernetes/community/blob/master/contributors/devel/api-conventions.md
+
+pod is lowest compute unit in kubernetes
+
+resource state is changed with http verbs (get, post, patch, delete etc)
+
+namespaces intended to isolate multiple groups/teams and give them access to a set of resources. avoid name collisions between resources
+
+get list of namespaces
+
+    kubectl get ns
+
+create a namespace
+
+    kubectl create ns <namespacename>
+
+get metadata about namespace
+
+    kubectl get ns/<namespacename> -o yaml # or json instead of yaml, -o flag specifies output type
+
+delete namespace
+
+    kubectl delete ns/<namespacename>
+
+show resource
+
+    kubectl get <resourcename>
+
+access the minikube dashboard
+
+    minikube dashboard
+
+click on +create in upper right corner to create new application
+
+list pods that are running
+
+    kubectl get pods
+
+list information about specific pod
+
+    kubectl logs <pod name>  # can use tab autocompletion
+
+
+can access application running in container via exec
+
+    kubectl exec -ti redis-3215927958-l626t bash    # exit with exit command
+
+get all pods in all namespaces
+
+    kubectl get pods --all-namespaces
+
+5.13 api demonstrating namespace usage
+
+
+5.14.a
+The Kubernetes API is XML/SOAP-based
+False
+
+5.14.b
+All Kubernetes resources contain metadata
+True
+
+5.14.c
+The Kubernetes API follows the OpenAPI specification
+True
+
+
+chapter 6
+
+
+pod represents group of co-located containers and associated volumes. top level api object to run containers, and smallest compute unit in kubernetes
+
+pod documentation
+https://kubernetes.io/docs/api-reference/v1.6/#pod-v1-core
+
+user-guide on pods
+https://kubernetes.io/docs/concepts/workloads/pods/pod/
+
+replication controllers
+
+create deployment with single container per pod
+
+    kubectl run nginx --image=nginx
+
+    kubectl get deployments,pods
+
+should use deployments instead of replication controllers
+
+creating a deployment with kubectl run adds label to pod
+
+query deployments by label
+
+    kubectl get pods -l run=<labelname>
+
+can add pod names on the fly
+
+    kubectl label pods <podname> <smthing>=<smelse>
+
+show deployments
+    kubectl get deployments
+
+show replica sets
+    kubectl get rs
+
+show pods
+    kubectl get pods
+
+
+scale deployment
+
+    kubectscale deployment/nginx --replicas=<nr of replicas>
+
+
+delete pod
+
+    kubectl delete pod <podname>
+
+kubectl set command added in version 1.3
+
+
+knowledge check
+
+6.14.a
+What kind of resource definitions does Kubernetes use: declarative or imperative?
+Declarative
+6.14.b
+Replica Sets are the new Replication Controllers you should use
+True
+6.14.c
+Deployments and Replication Controllers can be scaled
+True
+6.14.d
+With Deployments, you can roll back to a specific revision
+True
+
+chapter 7
+
+pod specification
+https://kubernetes.io/docs/api-reference/v1.7/#podspec-v1-core
+
+volumes
+https://kubernetes.io/docs/api-reference/v1.7/#volume-v1-core
+
+container
+https://kubernetes.io/docs/api-reference/v1.7/#container-v1-core
+
+run kubernetes pod with yaml file specification with following:
+
+    kubectl create -f <file.yaml>
+
+
+persistent volume provisioning
+
+    https://github.com/kubernetes/kubernetes/tree/master/examples/persistent-volume-provisioning
+
+get secrets
+
+    kubectl get secrets
+
+get help on create secret command
+
+    kubectl create secret generic --help
+
+create base64 encoded secret called mysql from the word root
+
+    kubectl create secret generic mysql --from-literal=password=root
+
+get info on the mysql secret
+
+    kubectl get secrets mysql -o yaml
+
+configmap used to pass configuration data to pod
+
+
+deleting a pod
+
+    kubectl delete pods <podname>
+
+open question from lab7, part 1: how to add text to file, eg
+kubectl exec -ti vol -c box -- echo "hello" >> /box/lfs222
+answer: use configmaps instead
+
+knowledge check
+7.15.a
+You cannot share the same volume between two containers in a pod
+False
+
+7.15.b
+Dynamic provisioning allows you to create secrets dynamically for sensitive applications
+False
+
+7.15.c
+You can use persistent storage in Kubernetes
+True
+
+7.15.d
+A configMap resource allows you to:
+Store configuration files and make them available in pods
+
+7.15.e
+Secrets can be created with the following command:
+kubectl create secret
+
+
+chapter 8 services
+
+how to expose container services to outside world
+
+create service at port 80
+
+    kubectl expose deployment/nginx --port=80 --type=NodePort
+
+show available services
+
+    kubectl get svc
+
+print information about the service
+
+    kubectl get svc nginx -o yaml
+
+delete service
+
+    kubectl delete svc <servicename>
+
+access a service via the browser
+
+    minikube service <servicename>
+
+
+knowledge check
+
+8.12.a
+A service is a static public IP address for a pod
+False
+
+8.12.b
+The Kubernetes DNS add-on provides a DNS name resolution for services
+True
+
+8.12.c
+NodePort is a service type that provides a high random port externally accessible from your cluster
+True
+
+8.12.d
+For debugging, you can access internal services using the kubectl proxy command
+True
+
+
+Chapter 9
+
+Ingress is a set of rules that allow inbound connections to reach the cluster service
+
+With ingress have a proxy running in the cluster, and the proxy can be reprogrammed by creating ingress rules.
+
+get ingress rules with
+
+    kubectl get ingress
+
+service name in BACKEND column
+
+edit ingress with
+
+    kubectl edit ingress <ingress_name>
+
+delete ingress with
+
+    kubectl delete ingress <ingress_name>
+
+nginx ingress controller: https://github.com/kubernetes/ingress/tree/master/controllers/nginx
+
+ingress: https://github.com/kubernetes/ingress
+
+example on how to deploy ingress controller: https://github.com/kubernetes/ingress/tree/master/examples/deployment/nginx
+
+start ghost deployment
+    kubectl run ghost --image=ghost
+    kubectl expose deployments ghost port=2368
+
+
+ClusterIP service type, created by default if type not specified, cannot be reached from the outside
+NodePort and load balancer can be reached from outside
+ClusterIP should only be reachable internally to the cluster, but can gain external access to it via an ingress controller
+
+With ingress can define rules for traffic to internal services
+
+nip.io is wildcard service which will automatically resolve to the internal Minikube IP
+
+knowledge check
+
+9.9.a
+What does the Ingress Controller allow you to do?
+Implement Layer 7 rules to reach your services
+
+9.9.b
+Ingress Controllers are proprietary
+False
+
+9.9.c
+An ingress rule is a Kubernetes resource
+True
+
+Chapter 10

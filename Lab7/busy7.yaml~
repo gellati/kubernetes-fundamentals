@@ -1,0 +1,14 @@
+containers:
+- image: busybox
+  volumeMounts:
+  - mountPath: /busy
+    name: test
+  name: busy
+- image: busybox
+  volumeMounts:
+    - mountPath: /box
+      name: test
+  name: box
+volumes:
+- name: test
+  emptyDir: {}

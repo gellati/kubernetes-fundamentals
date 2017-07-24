@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# start the docker service
+# sudo service docker start
+
+docker run -d --name=source busybox sleep 3600
+docker run -d --name=same-ip --net=container:source busybox sleep 3600
