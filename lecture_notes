@@ -437,3 +437,59 @@ An ingress rule is a Kubernetes resource
 True
 
 Chapter 10
+
+api resources
+
+HPA - Horizontal Pod Autoscalers
+scale replication controllers or deployments based on cpu usage
+
+$curl localhost:8080/apis/autoscaling/v1
+
+documentation about autoscaler
+
+    kubectl autoscale --help
+
+daemon sets
+
+role defining resources
+
+$ curl localhost:8080/apis/rbac.authorization.k8s.io/v1alpha1 
+
+
+knowledge check
+
+10.10.a
+RBAC APIs are stable APIs
+false
+
+10.10.b
+DaemonSets are used to run one pod per cluster
+False
+
+10.10.c
+Jobs can run pods in parallell
+True
+
+10.10.d
+All API resource specifications contain the following:
+a) Kind
+b) Metadata
+c) apiVersion
+-> d) All of the above  ; correct
+
+
+if get this error:
+
+    Could not find finalized endpoint being pointed to by kubernetes-dashboard: Error validating service: Error getting service kubernetes-dashboard: Get https://192.168.99.100:8443/api/v1/namespaces/kube-system/services/kubernetes-dashboard: dial tcp 192.168.99.100:8443: getsockopt: no route to host
+
+
+do
+
+    sudo ifconfig vboxnet0 up
+
+source: https://github.com/kubernetes/minikube/issues/1224
+
+
+Chapter 11
+
+
