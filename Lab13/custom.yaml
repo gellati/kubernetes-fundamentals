@@ -1,0 +1,13 @@
+metadata:
+  name: custom-resource.example.com
+apiVersion: extensions/v1beta1
+kind: ThirdPartyResource
+description: "A custom resource"
+versions:
+  - name: v1
+
+# run with
+# kubectl create -f custom.yml
+
+# get info with
+# kubectl get thirdpartyresources

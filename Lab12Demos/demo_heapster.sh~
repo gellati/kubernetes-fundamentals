@@ -1,0 +1,6 @@
+
+# check kubernets status
+minikube status
+
+kubectl get nodes
+

@@ -1,0 +1,8 @@
+apiVersion: extensions/v1beta1
+kind: ThirdPartyResource
+metadata:
+  name: pin-guin.k8s.lfs258.com
+description: "A crazy pinguin for Kubernetes"
+versions:
+- name: v1
+

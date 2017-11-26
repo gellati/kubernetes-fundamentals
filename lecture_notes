@@ -492,4 +492,391 @@ source: https://github.com/kubernetes/minikube/issues/1224
 
 Chapter 11
 
+scheduling
+
+
+start a kubernetes cluster
+
+    minikube start
+
+To find a node that can run a pod, the scheduler goes through a set of filters to find available nodes, and then ranks them. The node with the highest rank is selected to run the pod.
+
+The filtering is done via a set of policies called predicates. And the ranking is done via a set of priority functions.
+
+Kubernetes scheduling algorithm description
+https://github.com/kubernetes/community/blob/master/contributors/devel/scheduler_algorithm.md
+
+scheduling can be influenced via pod specification
+details of specification api
+https://kubernetes.io/docs/api-reference/v1.6/#pod-v1-core
+
+scheduling documentation, assigning pods to nodes
+https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+
+affinity rules
+node affinity - expression for node preferences for a pod
+pod affinity - expression for the placement of pod in relation to other pods
+rules can be soft or hard, thereby expressing a preference or a requirement.
+more on affinity rules
+https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+
+knowledge check
+
+11.12a
+Predicates allow you to run nodes
+false
+
+11.12b
+You cannot run more than one scheduler at once in Kubernetes
+false
+
+11.12c
+Which of the following does not affect the scheduling of pods?
+
+-> hostNetwork
+nodeSelector
+affinity
+
+
+11.12d
+You can create a pod binding manually
+true
+
+11.12e
+Scheduling in Kubernetes is about ________:
+
+Dynamically provisioning storage
+-> Finding a node to run a pod on
+Creating random high ports for NodePort type services
+Restarting the API server every 5 minutes
+
+
+if get following message:
+    Unable to connect to the server: dial tcp 192.168.99.100:8443: i/o timeout
+the do
+    sudo ifconfig vboxnet0 up
+
+chapter 12
+
+logging, monitoring, and troubleshooting
+
+two monitoring systems in Kubernetes
+Heapster, https://kubernetes.io/docs/tasks/debug-application-cluster/resource-usage-monitoring/
+Prometheus, https://prometheus.io/
+
+Heapster on Github: https://github.com/kubernetes/heapster
+Heapster deployment: https://github.com/kubernetes/heapster/blob/master/docs/influxdb.md
+Heapster and horizontal pod scaling: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+
+Prometheus client libraries: https://prometheus.io/docs/instrumenting/clientlibs/
+
+kubelet writes container logs to local files
+can retreive logs with command
+    kubectl logs
+
+Fluentd- aggregation of logs
+https://www.fluentd.org/
+Using Fluntd on Kubernetes:
+https://kubernetes.io/docs/tasks/debug-application-cluster/logging-elasticsearch-kibana/
+
+troubleshooting in these materials:
+https://kubernetes.io/docs/tasks/debug-application-cluster/troubleshooting/
+https://kubernetes.io/docs/tasks/debug-application-cluster/debug-application/
+https://kubernetes.io/docs/tasks/debug-application-cluster/debug-cluster/
+https://kubernetes.io/docs/tasks/debug-application-cluster/debug-pod-replication-controller/
+https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/
+
+The first commands to use for quick troubleshooting are:
+$ kubectl describe
+$ kubectl logs
+$ kubectl exec
+
+You will find that running a troubleshooting pod is very handy. You can do this by launching a busybox pod and execing into it:
+$ kubectl run busybox --image=busybox --command sleep 3600
+$ kubectl exec -ti <busybox_pod> -- /bin/sh
+
+
+knowledge check
+
+12.8a
+Prometheus and Fluentd are part of Cloud Native Computing Foundation.
+True
+
+12.8b
+Heapster uses Prometheus.
+False
+
+12.8c
+Prometheus is used for:
+Billing
+Quotas
+Finding ancestors
+-> Monitoring key metrics
+
+12.8d
+Kibana is:
+A SCRUM board tool
+A Tibetan practice
+-> A dashboard tool
+A log aggregation system
+
+
+12.8e
+In Minikube, you can enable Heapster addon with:
+a) minikube start heapster
+b) minikube enable heapster
+c) minikube heapster on
+-> d) minikube addons enable heapster
+
+
+
+chapter 13
+
+third party resource can be created with json/yaml manifest
+contains following fields:
+- apiVersion
+- kind
+- metadata, has name which is the most critical part, used to create api group and resource's short name. must have form <name>.<domain>
+- description
+- versions
+
+can create api objects and api endpoints. the objects can be managed with a REST interface
+
+need to write a custom controller to watch when new objects are created, updated or deleted
+
+third party resources can be used to create additional automation beyond that offered by Kubernetes primitives
+
+(writing controllers beyond course)
+
+knowledge check
+
+
+13.10.a
+What are Third Party Resources?
+a) Plugins for proprietary solutions
+x b) New API Objects definitions
+c) Resources from third-party vendors
+
+
+13.10.b
+Kubernetes manages CRUD operations for third-party resource:
+x True
+False
+
+
+13.10.c
+Third-party resources create a new API group:
+x True
+False
+
+lab13.pdf not working
+
+
+Chapter 14
+
+
+Learning objectives
+- discuss the principles fo a Kubernetes federation
+- summarize the steps that need to be taken to create a federation
+- discuss the Cluster API resource
+- re-balance pods among federated clusters
+
+linking kubernetes clusters
+
+kubernetes federation
+https://kubernetes.io/docs/tasks/federation/federation-service-discovery/
+
+walkthrough of federation
+https://github.com/kelseyhightower/kubernetes-cluster-federation
+
+cluster federation with kubefed
+https://kubernetes.io/docs/tasks/federation/set-up-cluster-federation-kubefed/
+
+for federation control plane to be able to talk to clusters in the federation, it needs to have access to secrets that contain the kubeconfig configuration of each cluster. This configuration can be obtained locally using the --minify and --flatten options of the kubectl config view command
+
+api resources supported in federation
+- Cluster
+- ConfigMap
+- DaemonSets
+- Deployment
+- Events
+- Ingress
+- Namespaces
+- ReplicaSets
+- Secrets
+- Services
+
+up to date list
+https://kubernetes.io/docs/concepts/cluster-administration/federation/
+
+can rebalance replicas, scheduling more pods in one cluster and less in another
+
+knowledge check
+14.10.a
+A federation uses the same etcd cluster as the one in the biggest cluster
+True
+x False
+
+14.10.b
+You can switch contexts to use a different cluster with kubectl
+x True
+False
+
+14.10.c
+A federated cluster exposes all the API resources of a single cluster
+True
+x False
+
+
+14.10.d
+ReplicaSets are always evenly distributed among the clusters in a federation
+True
+x False
+
+
+chapter 15
+
+Learning objectives: should be able to
+- package your Kubernetes application
+- share your packages as Charts
+- templatize the application
+
+helm - packages kubernetes applications
+
+helm has two components
+- Tiller, server which runs inside Kubernetes cluster
+- Helm, client which runs on the clocal machine
+
+a package is called a Chart
+
+With Helm can browse package repositories that contain Charts and deploy those charts on the Kubernetes cluster. Tiller will create a release, which is an instance of a chart
+
+Chart is an archive of a set of Kubernetes resource manifests that make up a distribute application
+
+Charts on github
+https://github.com/kubernetes/charts
+
+templates use Go templating syntax
+
+knowledge check
+15.11.a
+Helm is an SSH-based configuration management solution
+True
+x False
+
+
+15.11.b
+Chart are made of a set of templates for the manifests that make up an application
+x True
+False
+
+15.11.c
+The server side of Helm is called "Mast"
+True
+x False
+
+15.11.d
+Which of the following are valid helm commands?
+x a) helm install
+b) helm deinstall
+x c) helm repo list
+x d) helm list
+
+Chapter 16 Security
+
+Learning objectives
+- Explain how API requests go through the system
+- Compare different types of authentication
+- Configure authorization rules
+- Configure pod policies to control what containers are allowed to do
+- Restrict network traffic using network policies
+
+
+To perform any action in Kubernetes, need to access the API and go through three main steps:
+- Authentication
+- Authorization (ABAC or RBAC)
+- Admission control
+
+controlling access to Kubernetes
+https://kubernetes.io/docs/admin/accessing-the-api/
+
+at authorization step request is checked against existing policies
+
+admission controllers check the actual content of objects being created and validate them before admitting the request
+
+requests reaching API server are encrypted using TLS
+
+authentication in Kubernetes
+- authentication is done with certificates, tokens or basic authentication
+- users are not created by the api, but should be managed by an external system
+- system accounts are used by processes to access the api
+
+system accounts:
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+
+authentication:
+https://kubernetes.io/docs/admin/authentication/#webhook-token-authentication
+
+ABAC - Attribute Based Access Control, first authorization model in kubernetes
+RBAC - Role Based Access Control, becoming default authorization model in kubernetes
+
+RBAC policies can be defied via Kubernetes API itself
+
+RBAC defines following API resource kinds
+- Role
+- ClusterRole
+- Binding
+- ClusterRoleBinding
+
+RBAC documentation
+https://kubernetes.io/docs/admin/authorization/rbac/#api-overview
+
+admission controllers can access the content of the objects being created by the requests. The can modify or validate the objects, and potentially deny the request
+
+security contexts
+https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+
+PSP - PodSecurity Policies, cluster level policies that govern what a pod can do. A pod must match a Pod Security Policy to be admitted to a Kubernetes cluster
+https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+
+Network policy is a specification of how groups of pods are allowed to communicate with each other
+
+network policies
+https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy/
+
+Knowledge check
+
+16.14.a
+Kubernetes lets you create users directly into LDAP
+True
+x False
+
+16.14.b
+Kubernetes give you network isolation between namespaces out of the box
+True
+x False
+
+16.14.c
+What do we need to do in order to enforce a policy for our pods?
+a) Write a script to check the cgroups and namespaces
+x b) Creat a Pod Security Policy
+c) Do not use pods in the first place
+
+16.14.d
+RBAC stands for
+a) Role Backoff Admission Control
+b) Registry Balanced Accounting Certificate
+x c) Role Based Access Control
+
+16.14.e
+Which of the following are not valid Kubernetes
+a) RBAC
+x b) BABAC
+c) ABAC
+x d) RABAC
+
+16.14.f
+We can specify egress rules with network policies
+True
+xFalse
 

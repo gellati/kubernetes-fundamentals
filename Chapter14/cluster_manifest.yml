@@ -1,0 +1,11 @@
+apiVersion: federation/v1beta1
+kind: Cluster
+metadata:
+  name: chicago
+spec:
+  serverAddressByClientCIDRs:
+    - clientCIDR: "0.0.0.0/0"
+      serverAddress: "${CHICAGO_SERVER_ADDRESS}"
+  secretRef:
+    name: chicago
+

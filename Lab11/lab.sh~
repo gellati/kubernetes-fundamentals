@@ -1,0 +1,7 @@
+
+
+
+if get following message:
+    Unable to connect to the server: dial tcp 192.168.99.100:8443: i/o timeout
+the do
+    sudo ifconfig vboxnet0 up
